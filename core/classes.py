@@ -6,21 +6,27 @@ class Update:
         self.update_id: int = tg_response.get('update_id', 0)
         self.message: Message = Message(tg_response.get('message', None))
         self.channel_post: Message = Message(tg_response.get('message', None))
-    
-    def __repr__(self):
+
+    def __repr__(self) -> str:
         return f'<Update {self.update_id}>'
 
 
 class Result:
-    def __init__(self, tg_result):
-        self.updates = [Update(upd) for upd in tg_result]
-    
+    ''' Result of Telegram update event
+    '''
+    def __init__(self, tg_result: dict):
+        updates = [
+            upd for upd in tg_result['result']
+        ]
+
+        self.updates = [Update(upd) for upd in updates]
+
     def __repr__(self) -> str:
         return f'<Result [{len(self.updates)}]>'
-    
+
     def __len__(self) -> int:
         return len(self.updates)
-    
+
     def __getitem__(self, key: int) -> Update:
         return self.updates[key]
 
@@ -46,7 +52,7 @@ class Chat:
         self.last_name: str = tg_chat.get('last_name', '')
         self.username: str = tg_chat.get('username', '')
 
-        all_members_are_administrators: bool = tg_chat.get(
+        self.all_members_are_administrators: bool = tg_chat.get(
             'all_members_are_administrators', False)
 
     def __str__(self):
@@ -72,7 +78,7 @@ class MessageEntity:
         self.offset: int = tg_msg_entity.get('offset', 0)
         self.length: int = tg_msg_entity.get('length', 0)
         self.language: str = tg_msg_entity.get('language', '')
-    
+
     def __repr__(self):
         return f'<Entity {self.type}>'
 
@@ -88,10 +94,10 @@ class Message:
         self.date: int = tg_message.get('date', 0)
 
         self.document: Document = Document(tg_message.get('document', {}))
-        
+
         ents = tg_message.get('entities', [])
         self.entities: list[MessageEntity] = [MessageEntity(me) for me in ents]
-        
+
         self.caption: str = tg_message.get('caption', '')  # optional field
         c_ents = tg_message.get('caption_entities', [])
         self.caption_entities: list[MessageEntity] = [

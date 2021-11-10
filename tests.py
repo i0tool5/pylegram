@@ -1,5 +1,6 @@
 import json
 import unittest
+import pprint
 
 import core.classes as classes
 
@@ -52,7 +53,7 @@ class TestDecodeResponse(unittest.TestCase):
         for update in self.result:
             msg = update.message
             self.assertNotEqual(len(msg), 0)
-    
+
     def test_update(self):
         upd = self.result[0]
         self.assertEqual(upd.update_id, 112638473)
@@ -71,7 +72,19 @@ class TestBot(unittest.TestCase):
         self.bot = Bot('<bot_token_here>')
     def test_get_updates(self):
         r = self.bot.get_updates(0, 100, 0)
-        print(r)
+        pprint.pprint(r)
+
+    def test_delete_webhook(self):
+        r = self.bot.delete_webhook()
+        self.assertEqual(r['ok'], True)
+        self.assertTrue(r['result'])
+    
+    def test_send_message(self):
+        r = self.bot.get_updates(0, 100, 0)
+        pprint.pprint(r)
+        result = classes.Result(r)
+        print(result)
+        self.assertNotEqual(0, len(result))
 
 
 if __name__ == '__main__':
