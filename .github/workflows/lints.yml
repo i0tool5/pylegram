@@ -18,5 +18,5 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install pylint
-    - run: pip -m pipenv run flake8
-    - run: pip -m pipenv run mypy
+    - run: python -m pipenv run flake8
+    - run: python -m pipenv run mypy
