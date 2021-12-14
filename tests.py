@@ -5,6 +5,7 @@ import pprint
 import core.classes as classes
 
 from core.bot import Bot
+from core import formatting
 
 
 TEST_RESPONSE = '''
@@ -70,6 +71,7 @@ class TestDecodeResponse(unittest.TestCase):
 class TestBot(unittest.TestCase):
     def setUp(self):
         self.bot = Bot('<bot_token_here>')
+
     def test_get_updates(self):
         r = self.bot.get_updates(0, 100, 0)
         pprint.pprint(r)
@@ -78,13 +80,23 @@ class TestBot(unittest.TestCase):
         r = self.bot.delete_webhook()
         self.assertEqual(r['ok'], True)
         self.assertTrue(r['result'])
-    
+
     def test_send_message(self):
         r = self.bot.get_updates(0, 100, 0)
         pprint.pprint(r)
         result = classes.Result(r)
         print(result)
         self.assertNotEqual(0, len(result))
+
+
+class TestFormats(unittest.TestCase):
+    def test_check_formats(self):
+        self.assertEqual(
+            formatting.MODE_MARKDOWNV2, 'MarkdownV2')
+        self.assertEqual(
+            formatting.MODE_HTML, 'HTML')
+        self.assertEqual(
+            formatting.MODE_MARKDOWN, 'Markdown')
 
 
 if __name__ == '__main__':

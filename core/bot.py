@@ -7,11 +7,11 @@ class Bot:
         self._api_address: str = api_address or 'https://api.telegram.org'
         self._bot_prefixed: str = f'bot{self._token}'
 
-        fd = f'{self._api_address}/file/{self._bot_prefixed}'
+        f_link = f'{self._api_address}/file/{self._bot_prefixed}'
         addr = f'{self._api_address}/{self._bot_prefixed}'
 
         self._api_bot_address: str = addr
-        self._api_file_download: str = fd
+        self._api_file_download: str = f_link
 
     def get_updates(self, offset: int, limit: int, timeout: int):
         '''Long polling method to fetch updates from server
@@ -39,12 +39,19 @@ class Bot:
         r = requests.post(
             f'{self._api_bot_address}/{method_name}', json=data)
 
-        return r
+        return r.json()
 
-    def set_webhook(self, url: str, ):
+    def set_webhook(self, url: str, **kwargs) -> dict:
         ''' This method subscribes to a webhook to receive
-        incoming updates through this webhook
+        incoming updates through this webhook.
+        **kwargs are arguments described in telegram documentation
+        https://core.telegram.org/bots/api#setwebhook
         '''
+        method_name = 'setWebhook'
+        data = {'url': url}
+        data |= kwargs
+        # r = requests.post(
+        #    f'{self._api_bot_address}/{method_name}', json=data)
         raise NotImplementedError
 
     def delete_webhook(self, drop_pending_updates: bool = False) -> dict:
@@ -53,3 +60,17 @@ class Bot:
             f'{self._api_bot_address}/{method_name}',
             json={'drop_pending_updates': drop_pending_updates})
         return r.json()
+
+    def get_file(self, file_id: str):
+        ''' File size is limited to 20MB.
+        '''
+        method_name: str = 'getFile'
+        # r = requests.post(f'{self._api_bot_address}/{method_name}', )
+        ...
+
+    def send_document(self, chat_id, ):
+        ''' This method is used by bot to send general files.
+        File size is limited to 50MB at this moment.
+        '''
+        method_name = ''
+        ...

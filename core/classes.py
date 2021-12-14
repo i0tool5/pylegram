@@ -2,6 +2,8 @@ import time
 
 
 class Update:
+    ''' Telegram update event
+    '''
     def __init__(self, tg_response: dict):
         self.update_id: int = tg_response.get('update_id', 0)
         self.message: Message = Message(tg_response.get('message', None))
@@ -40,6 +42,9 @@ class User:
         self.username: str = tg_user.get('username', '')
         self.language_code: str = tg_user.get('language_code', '')
 
+    def __str__(self):
+        return self.username
+
 
 class Chat:
     def __init__(self, tg_chat: dict):
@@ -70,6 +75,12 @@ class Document:
         self.file_name: str = tg_document.get('file_name', '')
         self.mime_type: str = tg_document.get('mime_type', '')
         self.file_size: int = tg_document.get('file_size', 0)
+
+    def __str__(self):
+        return self.file_name
+
+    def __repr__(self):
+        return f'<File: {self.file_name} {self.file_size}bytes>'
 
 
 class MessageEntity:
@@ -142,3 +153,19 @@ class Message:
 
     def __repr__(self):
         return f'<Message {self.message_id} at {self.get_date()}>'
+
+
+class File:
+    '''
+    Documentation for this type:
+    https://core.telegram.org/bots/api#file
+    '''
+    def __init__(self,
+                 file_id: str,
+                 file_unique_id: str,
+                 file_size: int,
+                 file_path: str):
+        self.file_id = file_id
+        self.file_unique_id = file_unique_id
+        self.file_size = file_size
+        self.file_path = file_path
