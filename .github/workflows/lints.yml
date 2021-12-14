@@ -18,6 +18,7 @@ jobs:
         run:|
           pip install pipenv
           pipenv install --deploy --dev
-
-    - run: pipenv run flake8
-    - run: pipenv run mypy
+    - name: Run flake8 and mypy
+        run:|
+          pipenv run flake8
+          pipenv run mypy
