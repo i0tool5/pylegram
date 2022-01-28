@@ -28,13 +28,16 @@ class Bot:
             params=pars)
         return response.json()
 
-    def send_message(self, chat_id: str, text: str, parse_mode: str, **kwargs):
+    def send_message(self, chat_id: str, text: str, parse_mode: str = "", **kwargs):
         method_name = 'sendMessage'
         data = {
             'chat_id': chat_id,
             'text': text,
-            'parse_mode': parse_mode
         }
+
+        if parse_mode:
+            data['parse_mode'] = parse_mode
+
         data |= kwargs
         r = requests.post(
             f'{self._api_bot_address}/{method_name}', json=data)

@@ -1,3 +1,4 @@
+import os
 import json
 import unittest
 import pprint
@@ -70,7 +71,8 @@ class TestDecodeResponse(unittest.TestCase):
 
 class TestBot(unittest.TestCase):
     def setUp(self):
-        self.bot = Bot('<bot_token_here>')
+        bt = os.environ['BOT_TOKEN']
+        self.bot = Bot(bt)
 
     def test_get_updates(self):
         r = self.bot.get_updates(0, 100, 0)
@@ -83,10 +85,19 @@ class TestBot(unittest.TestCase):
 
     def test_send_message(self):
         r = self.bot.get_updates(0, 100, 0)
-        pprint.pprint(r)
         result = classes.Result(r)
-        print(result)
+        try:
+            upd = result[0]
+        except IndexError:
+            raise
+        
         self.assertNotEqual(0, len(result))
+        resp = self.bot.send_message(
+            upd.message.chat.id,
+            "Test message for {}".format(upd.message.sender)
+        )
+        print("RESPONSE")
+        pprint.pprint(resp)
 
 
 class TestFormats(unittest.TestCase):
