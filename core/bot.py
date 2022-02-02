@@ -28,7 +28,8 @@ class Bot:
             params=pars)
         return response.json()
 
-    def send_message(self, chat_id: str, text: str, parse_mode: str = "", **kwargs):
+    def send_message(self, chat_id: str, text: str, parse_mode: str = "",
+                     **kwargs):
         method_name = 'sendMessage'
         data = {
             'chat_id': chat_id,
@@ -50,9 +51,9 @@ class Bot:
         **kwargs are arguments described in telegram documentation
         https://core.telegram.org/bots/api#setwebhook
         '''
-        method_name = 'setWebhook'
-        data = {'url': url}
-        data |= kwargs
+        # method_name = 'setWebhook'
+        # data = {'url': url}
+        # data |= kwargs
         # r = requests.post(
         #    f'{self._api_bot_address}/{method_name}', json=data)
         raise NotImplementedError
@@ -64,16 +65,17 @@ class Bot:
             json={'drop_pending_updates': drop_pending_updates})
         return r.json()
 
-    def get_file(self, file_id: str):
+    def get_file(self, file_id: str) -> dict:
         ''' File size is limited to 20MB.
         '''
         method_name: str = 'getFile'
-        # r = requests.post(f'{self._api_bot_address}/{method_name}', )
-        ...
+        r = requests.post(f'{self._api_bot_address}/{method_name}',
+                          json={'file_id': file_id})
+        return r.json()
 
     def send_document(self, chat_id, ):
         ''' This method is used by bot to send general files.
         File size is limited to 50MB at this moment.
         '''
-        method_name = ''
-        ...
+        # method_name = 'sendDocument'
+        raise NotImplementedError

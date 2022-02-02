@@ -76,7 +76,12 @@ class TestBot(unittest.TestCase):
 
     def test_get_updates(self):
         r = self.bot.get_updates(0, 100, 0)
-        pprint.pprint(r)
+        result = classes.Result(r)
+        self.assertGreater(len(result), 0)
+        for upd in result:
+            if upd.u_type == 'message':
+                break
+        print(upd.object.sender)
 
     def test_delete_webhook(self):
         r = self.bot.delete_webhook()
@@ -86,18 +91,48 @@ class TestBot(unittest.TestCase):
     def test_send_message(self):
         r = self.bot.get_updates(0, 100, 0)
         result = classes.Result(r)
+        self.assertNotEqual(0, len(result))
+
         try:
             upd = result[0]
         except IndexError:
-            raise
-        
-        self.assertNotEqual(0, len(result))
+            raise   # hmm...
+
         resp = self.bot.send_message(
-            upd.message.chat.id,
-            "Test message for {}".format(upd.message.sender)
+            upd.object.chat.id,
+            "Test message for {}".format(upd.object.sender)
         )
-        print("RESPONSE")
         pprint.pprint(resp)
+        msg = classes.Message(resp['result'])
+        self.assertTrue(msg.from_.is_bot)
+
+    def test_command_message(self):
+        r = self.bot.get_updates(0, 100, 0)
+        result = classes.Result(r)
+        self.assertGreater(len(result), 0)
+
+        for upd in result:
+            message = upd.object
+            try:
+                if message.entity_type() == 'bot_command':
+                    self.assertTrue(str(message).startswith('/'))
+                    print(message)
+            except classes.TgEntityException:
+                continue
+
+    def test_document(self):
+        r = self.bot.get_updates(0, 100, 0)
+        result = classes.Result(r)
+        self.assertGreater(len(result), 0)
+
+        for upd in result:
+            message = upd.object
+            if (doc := message.document) is not None:
+                print(repr(doc))
+                self.assertNotEqual(doc.file_id, '')
+                self.assertNotEqual(doc.file_name, '')
+                self.assertNotEqual(doc.mime_type, '')
+                self.assertNotEqual(doc.file_size, 0)
 
 
 class TestFormats(unittest.TestCase):
