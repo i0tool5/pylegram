@@ -19,6 +19,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8
         pip install mypy
-        mypy --install-types
+        pip install types-requests
     - run: flake8 .
     - run: mypy .
